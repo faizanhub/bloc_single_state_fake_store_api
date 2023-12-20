@@ -43,8 +43,8 @@ class AllProductsScreen extends StatelessWidget {
         ),
         body: BlocConsumer<AllProductsBloc, AllProductsState>(
           listener: (context, state) {
-            if (state is AllProductsErrorState) {
-              Utils.showFlushBar(context, "Error", state.message);
+            if (state.errorMsg.isNotEmpty) {
+              Utils.showFlushBar(context, "Error", state.errorMsg);
             }
           },
           builder: (context, state) {
@@ -54,36 +54,35 @@ class AllProductsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (state is AllProductsLoadingState)
-                    const Center(
-                      child: CircularProgressIndicator(
-                        color: AppColors.colorPrimary,
-                      ),
-                    ),
-                  if (state is AllProductsLoadedState)
-                    Expanded(
-                      child: ListView.separated(
-                        itemCount: state.productsList.length,
-                        separatorBuilder: (context, index) {
-                          return kHeight(2.h);
-                        },
-                        itemBuilder: (context, index) {
-                          var item = state.productsList[index];
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(context, ProductDetailsScreen.routeName, arguments: item);
+                  state.isLoading
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.colorPrimary,
+                          ),
+                        )
+                      : Expanded(
+                          child: ListView.separated(
+                            itemCount: state.productsList.length,
+                            separatorBuilder: (context, index) {
+                              return kHeight(2.h);
                             },
-                            child: ProductCard(
-                              image: item.image ?? '',
-                              imageText: "${item.price} AED",
-                              rating: item.rating?.rate?.toDouble() ?? 0.0,
-                              productName: item.title ?? '',
-                              productDesc: item.description ?? '',
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+                            itemBuilder: (context, index) {
+                              var item = state.productsList[index];
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(context, ProductDetailsScreen.routeName, arguments: item);
+                                },
+                                child: ProductCard(
+                                  image: item.image ?? '',
+                                  imageText: "${item.price} AED",
+                                  rating: item.rating?.rate?.toDouble() ?? 0.0,
+                                  productName: item.title ?? '',
+                                  productDesc: item.description ?? '',
+                                ),
+                              );
+                            },
+                          ),
+                        ),
                 ],
               ),
             );

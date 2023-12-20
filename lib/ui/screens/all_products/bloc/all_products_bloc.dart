@@ -14,19 +14,19 @@ part 'all_products_state.dart';
 class AllProductsBloc extends Bloc<AllProductsEvent, AllProductsState> {
   final networkService = NetworkService();
 
-  AllProductsBloc() : super(AllProductsInitialState()) {
+  AllProductsBloc() : super(AllProductsState.initial()) {
     on<AllProductsGetListEvent>((event, emit) async  {
-      emit(AllProductsLoadingState());
+      emit(state.copyWith(isLoading: true));
 
       await networkService.getGetApiResponse(AppConfigs.allProductsUrl).then((jsonList) {
         final listValue = jsonList as List;
-        final list = listValue.map((e) => Product.fromJson(e)).toList();
+        final productsList = listValue.map((e) => Product.fromJson(e)).toList();
 
-        emit(AllProductsLoadedState(productsList: list));
+        emit(state.copyWith(isLoading: false, productsList: productsList));
       }).onError((e, stackTrace) {
 
           debugPrint(e.toString());
-          emit(AllProductsErrorState(message: e.toString()));
+          emit(state.copyWith(isLoading: false,errorMsg: e.toString()));
 
       });
     });

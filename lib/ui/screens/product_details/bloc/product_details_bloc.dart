@@ -7,16 +7,11 @@ part 'product_details_event.dart';
 part 'product_details_state.dart';
 
 class ProductDetailsBloc extends Bloc<ProductDetailsEvent, ProductDetailsState> {
-  ProductDetailsBloc() : super(ProductDetailsInitialState()) {
+  ProductDetailsBloc() : super(ProductDetailsState.initial()) {
     on<ProductDetailsToggleExpandedEvent>((event, emit) {
 
 
-      if (state is ProductDetailsIsExpandedState) {
-        final currentState = state as ProductDetailsIsExpandedState;
-        emit(ProductDetailsIsExpandedState(isExpanded: !currentState.isExpanded));
-      } else {
-        emit(const ProductDetailsIsExpandedState(isExpanded: true));
-      }
+      emit(state.copyWith(isExpanded: !state.isExpanded));
     });
   }
 }

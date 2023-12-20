@@ -14,20 +14,13 @@ part 'login_state.dart';
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final networkService = NetworkService();
 
-  LoginBloc() : super(LoginInitial()) {
+  LoginBloc() : super(LoginState.initial()) {
     on<LoginTogglePasswordVisibilityEvent>((event, emit) {
-      log(state.runtimeType.toString());
-
-      if (state is LoginShowPasswordState) {
-        final currentState = state as LoginShowPasswordState;
-        emit(LoginShowPasswordState(obscureText: !currentState.obscureText));
-      } else {
-        emit(const LoginShowPasswordState(obscureText: false));
-      }
+      emit(state.copyWith(isShowPassword: !state.isShowPassword));
     });
 
     on<LoginButtonEvent>((event, emit) async {
-      emit(LoginLoadingState());
+      emit(state.copyWith(isLoading: true));
 
       String url = AppConfigs.signInUrl;
 
@@ -38,9 +31,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
       await networkService.getPostApiResponse(url, data).then((value) {
         debugPrint("response $value");
-        emit(LoginSuccessState());
+        emit(state.copyWith(isLoggedIn: true, isLoading: false));
+
       }).catchError((e) {
-        emit(LoginErrorState(message: e.toString()));
+        emit(state.copyWith(isLoading: false, errorMsg: e.toString()));
+
       });
     });
   }

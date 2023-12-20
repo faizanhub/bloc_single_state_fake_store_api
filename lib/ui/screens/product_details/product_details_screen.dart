@@ -32,11 +32,12 @@ class ProductDetailsScreen extends StatelessWidget {
               child: Column(
                 children: [
                   Container(
-                    height: state is ProductDetailsIsExpandedState
-                        ? state.isExpanded
-                            ? 65.h
-                            : 50.h
-                        : 65.h,
+                    height: state.isExpanded ? 50.h : 65.h,
+                    // height: state is ProductDetailsIsExpandedState
+                    //     ? state.isExpanded
+                    //         ? 65.h
+                    //         : 50.h
+                    //     : 65.h,
                     width: 100.w,
                     decoration: BoxDecoration(
                         // color: Colors.green,
@@ -44,7 +45,7 @@ class ProductDetailsScreen extends StatelessWidget {
                       image: NetworkImage(
                         product.image ?? '',
                       ),
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fill,
                       colorFilter: ColorFilter.mode(
                         Colors.black.withOpacity(0.05), // Adjust opacity as needed
                         BlendMode.darken,
@@ -103,12 +104,7 @@ class ProductDetailsScreen extends StatelessWidget {
                     child: AnimatedContainer(
                       width: 100.w,
                       duration: const Duration(milliseconds: 300),
-                      // height: vm.isExpanded ? 35.h : 50.h,
-                      height: state is ProductDetailsIsExpandedState
-                          ? state.isExpanded
-                              ? 35.h
-                              : 50.h
-                          : 35.h,
+                      height: state.isExpanded ? 50.h : 35.h,
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.only(
@@ -173,54 +169,44 @@ class ProductDetailsScreen extends StatelessWidget {
                             ///long textDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescri
                             Text(
                               '${product.description}',
-                              // maxLines: vm.isExpanded ? 3 : 10,
-                              maxLines: state is ProductDetailsIsExpandedState
-                                  ? state.isExpanded
-                                  ? 3
-                                  : 10
-                                  : 3,
+                              maxLines: state.isExpanded ? 5 : 5,
                               overflow: TextOverflow.ellipsis,
                             ),
 
                             ///rating container
-                            // !vm.isExpanded
-
-                            state is ProductDetailsIsExpandedState
-                                ? !state.isExpanded
-                                ?  Container(
-                              color: const Color(0xffF1F1F1),
-                              width: 95.w,
-                              height: 13.h,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  kHeight(1.h),
-                                  Text(
-                                    'Reviews ${product.rating?.count}',
-                                    style: normalTextStyle2,
-                                  ),
-                                  kHeight(2.h),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Text(
-                                        '${product.rating?.rate}',
-                                        style: normalTextStyle2.copyWith(
-                                          fontSize: 25.px,
-                                          fontWeight: FontWeight.bold,
+                            state.isExpanded
+                                ? Container(
+                                    color: const Color(0xffF1F1F1),
+                                    width: 95.w,
+                                    height: 13.h,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        kHeight(0.5.h),
+                                        Text(
+                                          'Reviews ${product.rating?.count}',
+                                          style: normalTextStyle2,
                                         ),
-                                      ),
-                                      RatingBar(
-                                        rating: product.rating!.rate!.toDouble(),
-                                      ),
-                                    ],
+                                        kHeight(2.h),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                          children: [
+                                            Text(
+                                              '${product.rating?.rate}',
+                                              style: normalTextStyle2.copyWith(
+                                                fontSize: 25.px,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            RatingBar(
+                                              rating: product.rating!.rate!.toDouble(),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
                                   )
-                                ],
-                              ),
-                            )
                                 : const SizedBox()
-                                : const SizedBox(),
-
                           ],
                         ),
                       ),

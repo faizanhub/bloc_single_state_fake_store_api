@@ -27,8 +27,8 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,
           ),
-          home: const AllProductsScreen(),
-          // initialRoute: LoginScreen.routeName,
+          // home: const AllProductsScreen(),
+          initialRoute: LoginScreen.routeName,
           onGenerateRoute: AppRoutes.onGenerateRoute,
         );
       },

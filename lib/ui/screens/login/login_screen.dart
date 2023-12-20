@@ -50,11 +50,11 @@ class _LoginScreenState extends State<LoginScreen> {
             listener: (context, state) {
               // TODO: implement listener
 
-              if (state is LoginSuccessState) {
+              if (state.isLoggedIn) {
                 Navigator.pushNamed(context, AllProductsScreen.routeName);
               }
-              if (state is LoginErrorState) {
-                Utils.showFlushBar(context, "Error", state.message);
+              if (state.errorMsg.isNotEmpty) {
+                Utils.showFlushBar(context, "Error", state.errorMsg);
               }
             },
             builder: (context, state) {
@@ -117,43 +117,40 @@ class _LoginScreenState extends State<LoginScreen> {
                                 hintText: 'Password',
                                 labelText: 'Password',
                                 suffixIcon: GestureDetector(
-                                    onTap: () {
-                                      print('event added');
+                                  onTap: () {
+                                    print('event added');
 
-                                      context.read<LoginBloc>().add(LoginTogglePasswordVisibilityEvent());
-                                    },
-                                    child: state is LoginShowPasswordState
-                                        ? Icon(
-                                            state.obscureText ? Icons.visibility : Icons.visibility_off,
-                                            color: Colors.grey,
-                                          )
-                                        : const Icon(
-                                            Icons.visibility,
-                                            color: Colors.grey,
-                                          )),
-                                obscureText: state is LoginShowPasswordState ? state.obscureText : true,
+                                    context.read<LoginBloc>().add(LoginTogglePasswordVisibilityEvent());
+                                  },
+                                  child: Icon(
+                                    state.isShowPassword ? Icons.visibility_off : Icons.visibility,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                obscureText: state.isShowPassword ? true : false,
                                 validator: validatePasswordField,
                               ),
 
                               kHeight(4.h),
 
                               ///Continue Button
-                              if (state is LoginInitial || state is LoginErrorState)
-                                CustomButton(
-                                  onTap: () {
-                                    // vm.handleLoginTap(context);
-                                    context.read<LoginBloc>().add(LoginButtonEvent(
-                                          email: emailC.text,
-                                          password: passwordC.text,
-                                        ));
-                                  },
-                                  // isLoading: vm.isLoading,
-                                  text: 'Continue',
-                                ),
-                              if (state is LoginLoadingState)
-                                const Center(
-                                  child: CircularProgressIndicator(),
-                                ),
+
+                              state.isLoading
+                                  ? const Center(
+                                      child: CircularProgressIndicator(),
+                                    )
+                                  : CustomButton(
+                                      onTap: () {
+                                        // vm.handleLoginTap(context);
+                                        context.read<LoginBloc>().add(LoginButtonEvent(
+                                              email: emailC.text,
+                                              password: passwordC.text,
+                                            ));
+                                      },
+                                      // isLoading: vm.isLoading,
+                                      text: 'Continue',
+                                    ),
+
                               kHeight(2.h),
 
                               ///Need Help Text
